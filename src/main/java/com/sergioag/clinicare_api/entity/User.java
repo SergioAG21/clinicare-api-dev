@@ -8,6 +8,7 @@ import com.sergioag.clinicare_api.enums.Role;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -15,14 +16,15 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Date;
 
 @Entity
 @Table(name = "users")
-@Data // Generar setters y getters
-@NoArgsConstructor // Constructor vacio
-@AllArgsConstructor // Constructor con todos los campos
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 @Builder
 public class User {
 
@@ -31,6 +33,7 @@ public class User {
     private Long id;
 
     @NotBlank
+    @Column(unique = true)
     private String dni;
 
     @NotBlank
@@ -40,9 +43,8 @@ public class User {
     @JsonProperty("last_name")
     private String lastName;
 
-    @NotBlank
     @JsonProperty("birth_date")
-    private Date birthDate;
+    private LocalDate birthDate;
 
     @NotBlank
     private String address;
@@ -51,11 +53,12 @@ public class User {
     @JsonProperty("phone_number")
     private String phoneNumber;
 
-    @NotBlank
+    @NotNull
     @Enumerated(EnumType.STRING)
     private Gender gender;
 
     @Builder.Default
+    @NotNull
     @Enumerated(EnumType.STRING)
     private Role role = Role.USER;
 
