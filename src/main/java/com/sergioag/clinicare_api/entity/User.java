@@ -4,7 +4,7 @@ import static jakarta.persistence.GenerationType.*;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.sergioag.clinicare_api.enums.Gender;
-import com.sergioag.clinicare_api.enums.Role;
+import com.sergioag.clinicare_api.enums.UserStatus;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -18,7 +18,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Date;
+import java.util.Set;
 
 @Entity
 @Table(name = "users")
@@ -57,11 +57,6 @@ public class User {
     @Enumerated(EnumType.STRING)
     private Gender gender;
 
-    @Builder.Default
-    @NotNull
-    @Enumerated(EnumType.STRING)
-    private Role role = Role.USER;
-
     @Email
     private String email;
 
@@ -74,4 +69,15 @@ public class User {
     @UpdateTimestamp
     private LocalDateTime updatedAt;
 
+    @NotNull
+    @Enumerated(EnumType.STRING)
+    private UserStatus status;
+
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "user_roles",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id")
+    )
+    private Set<Role> roles;
 }

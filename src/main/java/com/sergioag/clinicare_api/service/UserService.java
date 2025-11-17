@@ -19,6 +19,4 @@ public interface UserService {
 //    Optional<User> update(Long id, User user);
 //
 //    void deleteById(Long id);
-
-    Optional<User> findByEmailAndPassword(String email, String password);
 }

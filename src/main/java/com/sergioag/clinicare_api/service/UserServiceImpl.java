@@ -1,13 +1,11 @@
-package com.sergioag.clinicare_api.service.impl;
+package com.sergioag.clinicare_api.service;
 
 import com.sergioag.clinicare_api.entity.User;
 import com.sergioag.clinicare_api.repository.UserRepository;
-import com.sergioag.clinicare_api.service.UserService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -25,11 +23,5 @@ public class UserServiceImpl implements UserService {
 
     public User save(User user) {
         return userRepository.save(user);
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public Optional<User> findByEmailAndPassword(String email, String password) {
-        return userRepository.findByEmailAndPassword(email, password);
     }
 }

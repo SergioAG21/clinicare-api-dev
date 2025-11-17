@@ -1,6 +1,5 @@
 package com.sergioag.clinicare_api.controller;
 
-import com.sergioag.clinicare_api.dto.UserLoginDTO;
 import com.sergioag.clinicare_api.dto.UserResponseDTO;
 import com.sergioag.clinicare_api.entity.User;
 import com.sergioag.clinicare_api.mapper.UserMapper;

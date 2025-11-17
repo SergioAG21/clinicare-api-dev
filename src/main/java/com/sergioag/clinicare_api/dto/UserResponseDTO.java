@@ -2,7 +2,7 @@ package com.sergioag.clinicare_api.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.sergioag.clinicare_api.enums.Gender;
-import com.sergioag.clinicare_api.enums.Role;
+import com.sergioag.clinicare_api.enums.UserStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -23,6 +23,8 @@ public class UserResponseDTO {
     @JsonProperty("last_name")
     private String lastName;
 
+    private String email;
+
     @JsonProperty("birth_date")
     private LocalDate birthDate;
 
@@ -31,7 +33,7 @@ public class UserResponseDTO {
     @JsonProperty("phone_number")
     private String phoneNumber;
 
+    private UserStatus status;
+
     private Gender gender;
-    private Role role;
-    private String email;
 }
