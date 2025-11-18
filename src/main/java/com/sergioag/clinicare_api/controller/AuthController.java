@@ -6,9 +6,12 @@ import com.sergioag.clinicare_api.dto.auth.RegisterRequest;
 import com.sergioag.clinicare_api.entity.Role;
 import com.sergioag.clinicare_api.entity.User;
 import com.sergioag.clinicare_api.enums.UserStatus;
+import com.sergioag.clinicare_api.exception.EmailAlredyInUseException;
+import com.sergioag.clinicare_api.exception.EmailNotFoundException;
 import com.sergioag.clinicare_api.repository.RoleRepository;
 import com.sergioag.clinicare_api.repository.UserRepository;
 import com.sergioag.clinicare_api.security.JwtService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -51,44 +54,50 @@ public class AuthController {
                 new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword())
         );
 
-        // extraClaims: puedes meter aquí roles u otros datos
+        var user = userRepository.findByEmail(request.getEmail())
+                .orElseThrow(() -> new EmailNotFoundException("El usuario con email no está registrado o no está confirmado"));
+
+        // En extraClaims se puede meter lo que sea necesario
         Map<String, Object> extraClaims = new HashMap<>();
-        var userOpt = userRepository.findByEmail(request.getEmail());
-        if (userOpt.isPresent()) {
-            var roles = userOpt.get().getRoles();
-            extraClaims.put("roles", roles);
-        }
+            extraClaims.put("roles", user.getRoles());
 
         String token = jwtService.generateToken(request.getEmail(), extraClaims);
         return new AuthResponse(token);
     }
 
-    // Endpoint de registro mínimo (opcional, útil para pruebas)
     @PostMapping("/register")
-    public ResponseEntity<?> register(@RequestBody RegisterRequest req) {
-
+    public ResponseEntity<Map<String, String>> register(@RequestBody RegisterRequest req) {
         Role defaultRole = roleRepository.findByName("USER")
                 .orElseThrow(() -> new RuntimeException("ROLE USER not found"));
 
-        UserStatus defaultStatus = UserStatus.PENDING;
+        boolean emailExists = userRepository.findByEmail(req.getEmail().toLowerCase()).isPresent();
+        boolean dniExists = userRepository.findByDni(req.getDni().toUpperCase()).isPresent();
 
-        User user = new User();
-        user.setEmail(req.getEmail());
-        user.setPassword(passwordEncoder.encode(req.getPassword()));
-        user.setDni(req.getDni()); // si tienes un campo en el DTO
-        user.setAddress(req.getAddress());
-        user.setLastName(req.getLastName());
-        user.setBirthDate(req.getBirthDate());
-        user.setName(req.getName());
-        user.setGender(req.getGender());
-        user.setPhoneNumber(req.getPhoneNumber());
-        user.setRoles(Set.of(defaultRole));
-        user.setStatus(defaultStatus);
+        if (emailExists) {
+            return ResponseEntity.status(HttpStatus.CONFLICT)
+                    .body(Map.of("message", "El correo electrónico ingresado ya está en uso"));
+        } else if (dniExists) {
+            return ResponseEntity.status(HttpStatus.CONFLICT)
+                    .body(Map.of("message", "El DNI ingresado ya está en uso"));
+        } else {
+            User user = new User();
+            user.setEmail(req.getEmail());
+            user.setPassword(passwordEncoder.encode(req.getPassword()));
+            user.setDni(req.getDni());
+            user.setAddress(req.getAddress());
+            user.setLastName(req.getLastName());
+            user.setBirthDate(req.getBirthDate());
+            user.setName(req.getName());
+            user.setGender(req.getGender());
+            user.setPhoneNumber(req.getPhoneNumber());
+            user.setRoles(Set.of(defaultRole));
+            user.setStatus(UserStatus.PENDING);
 
-        userRepository.save(user);
+            userRepository.save(user);
 
-        String token = jwtService.generateToken(user.getEmail(), Map.of());
-
-        return ResponseEntity.ok(token);
+            return ResponseEntity.status(HttpStatus.CREATED)
+                    .body(Map.of("message", "Usuario registrado correctamente"));
+        }
     }
+
 }

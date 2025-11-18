@@ -1,7 +1,9 @@
 package com.sergioag.clinicare_api.service;
 
 import com.sergioag.clinicare_api.entity.User;
+import com.sergioag.clinicare_api.exception.EmailNotFoundException;
 import com.sergioag.clinicare_api.repository.UserRepository;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,4 +26,12 @@ public class UserServiceImpl implements UserService {
     public User save(User user) {
         return userRepository.save(user);
     }
+
+    public User getCurrentUser(Authentication authentication) {
+        String email = authentication.getName();
+
+        return userRepository.findByEmail(email)
+                .orElseThrow(() -> new EmailNotFoundException("El usuario con email no está registrado o no está confirmado"));
+    }
+
 }

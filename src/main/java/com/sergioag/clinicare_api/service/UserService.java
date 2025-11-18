@@ -1,8 +1,10 @@
 package com.sergioag.clinicare_api.service;
 
+import com.sergioag.clinicare_api.dto.UserResponseDTO;
 import com.sergioag.clinicare_api.entity.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.Authentication;
 
 import java.util.List;
 import java.util.Optional;
@@ -15,6 +17,8 @@ public interface UserService {
 //    User findById(Long id);
 
     User save(User user);
+
+    User getCurrentUser(Authentication authentication);
 
 //    Optional<User> update(Long id, User user);
 //

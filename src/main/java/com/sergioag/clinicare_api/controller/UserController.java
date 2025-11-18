@@ -6,6 +6,7 @@ import com.sergioag.clinicare_api.mapper.UserMapper;
 import com.sergioag.clinicare_api.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
@@ -29,8 +30,16 @@ public class UserController {
     @GetMapping
     public ResponseEntity<List<UserResponseDTO>> findAll() {
         List<User> users = userService.findAll();
-        List<UserResponseDTO> dtos = userMapper.toUserResponseDTOs(users);
-        return ResponseEntity.ok(dtos);
+        List<UserResponseDTO> usersResponse = userMapper.toUserResponseDTOs(users);
+        return ResponseEntity.ok(usersResponse);
+    }
+
+    @GetMapping("/me")
+    public ResponseEntity<UserResponseDTO> me(Authentication authentication) {
+        User user = userService.getCurrentUser(authentication);
+        UserResponseDTO userResponse = userMapper.toUserResponseDTO(user);
+
+        return ResponseEntity.ok(userResponse);
     }
 
     @PostMapping

@@ -10,8 +10,6 @@ import java.util.Optional;
 
 @Mapper(componentModel = "spring")
 public interface UserMapper {
-    UserMapper INSTANCE = Mappers.getMapper(UserMapper.class);
-
     // Only one User
     UserResponseDTO toUserResponseDTO(User user);
 
