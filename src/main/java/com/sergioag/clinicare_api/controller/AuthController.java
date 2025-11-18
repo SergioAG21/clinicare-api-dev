@@ -6,7 +6,6 @@ import com.sergioag.clinicare_api.dto.auth.RegisterRequest;
 import com.sergioag.clinicare_api.entity.Role;
 import com.sergioag.clinicare_api.entity.User;
 import com.sergioag.clinicare_api.enums.UserStatus;
-import com.sergioag.clinicare_api.exception.EmailAlredyInUseException;
 import com.sergioag.clinicare_api.exception.EmailNotFoundException;
 import com.sergioag.clinicare_api.repository.RoleRepository;
 import com.sergioag.clinicare_api.repository.UserRepository;
