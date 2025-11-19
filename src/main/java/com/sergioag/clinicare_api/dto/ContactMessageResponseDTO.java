@@ -23,6 +23,8 @@ public class ContactMessageResponseDTO {
 
     private String message;
 
+    private String answer;
+
     @JsonProperty("created_at")
     private LocalDateTime createdAt;
 

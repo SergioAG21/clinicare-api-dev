@@ -34,10 +34,14 @@ public class ContactMessage {
     @Column(nullable = false, unique = false)
     private String message;
 
+    @Column(nullable = true, unique = false)
+    private String answer;
+
     @Column(name = "created_at")
     @CreationTimestamp
     private LocalDateTime createdAt;
 
+    @Column(name = "updated_at")
     @UpdateTimestamp
     private LocalDateTime updatedAt;
 
