@@ -14,7 +14,7 @@ public interface UserService {
 
 //    Page<User> findAll(Pageable pageable);
 //
-//    User findById(Long id);
+    User findById(Long id);
 
     User save(User user);
 
@@ -22,5 +22,5 @@ public interface UserService {
 
 //    Optional<User> update(Long id, User user);
 //
-//    void deleteById(Long id);
+    void deleteById(Long id);
 }

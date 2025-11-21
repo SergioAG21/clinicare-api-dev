@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Respuesta a tu consulta</title>
+</head>
+
+<body style="margin:0; padding:0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">
+
+<!-- Contenedor central -->
+<table width="100%" cellspacing="0" cellpadding="0">
+    <tr>
+        <td align="center" style="padding:30px 0;">
+            <table width="600" cellpadding="0" cellspacing="0"
+                   style="background:white; border-radius:10px; overflow:hidden; box-shadow:0 4px 12px rgba(0,0,0,0.1);">
+
+                <!-- Header con logo -->
+                <tr>
+                    <td style="background:#ffffff; text-align:center; padding:25px 0; border-bottom:1px solid #e8e8e8;">
+                        <img th:src="'cid:' + ${logoCid}" alt="Clinicare" style="width: 240px;"/>
+                    </td>
+                </tr>
+
+                <!-- Contenido -->
+                <tr>
+                    <td style="padding:30px;">
+
+                        <p style="font-size:15px; color:#333; margin-bottom:10px;">
+                            Hola <span th:text="${nombre}"></span>, hemos recibido tu mensaje y aquí tienes la información solicitada.
+                        </p>
+
+                        <h2 style="color: rgb(0,154,255,1); font-size:22px; text-align: center">Tu pregunta</h2>
+
+                        <!-- Pregunta -->
+                        <div style="background:#eef3f7; padding:15px; border-left:5px solid #1B4F72; border-radius:6px;">
+                            <p style="margin:0; font-size:15px; color:#1B4F72;" th:text="${pregunta}"></p>
+                        </div>
+
+                        <!-- Respuesta -->
+                        <h3 style="color: rgb(72,184,75,1); margin-top:25px; font-size:22px; text-align: center;">Nuestra respuesta</h3>
+                        <div style="background:#eaf7ea; padding:15px; border-left:5px solid #239B56; border-radius:6px;">
+                            <p style="margin:0; font-size:15px; color:#145a32;" th:text="${respuesta}"></p>
+                        </div>
+
+                        <p style="margin-top:25px; font-size:15px; color:#555;">
+                            Si necesitas más ayuda, no dudes en volver a contactarnos.
+                        </p>
+
+                        <p style="margin-top:30px; font-size:14px; color:#333;">
+                            Saludos,<br/>
+                            <strong>Equipo de CliniCare</strong>
+                        </p>
+                    </td>
+                </tr>
+
+                <!-- Footer -->
+                <tr>
+                    <td style="background:#f0f0f0; padding:15px; text-align:center; font-size:12px; color:#777;">
+                        © 2025 CliniCare. Todos los derechos reservados.
+                        <br>Este es un mensaje automático, por favor, no respondas a este correo
+                    </td>
+                </tr>
+
+            </table>
+        </td>
+    </tr>
+</table>
+
+</body>
+</html>

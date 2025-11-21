@@ -12,5 +12,7 @@ public interface ContactService {
 
     ContactMessage save(ContactMessage contactMessage);
 
+    ContactMessage update(Long id, String answer);
+
     void deleteById(Long id);
 }

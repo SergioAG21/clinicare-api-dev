@@ -3,6 +3,8 @@ package com.sergioag.clinicare_api.controller;
 import com.sergioag.clinicare_api.dto.auth.AuthRequest;
 import com.sergioag.clinicare_api.dto.auth.AuthResponse;
 import com.sergioag.clinicare_api.dto.auth.RegisterRequest;
+import com.sergioag.clinicare_api.dto.email.EmailDTO;
+import com.sergioag.clinicare_api.entity.ContactMessage;
 import com.sergioag.clinicare_api.entity.Role;
 import com.sergioag.clinicare_api.entity.User;
 import com.sergioag.clinicare_api.enums.UserStatus;
@@ -10,6 +12,7 @@ import com.sergioag.clinicare_api.exception.EmailNotFoundException;
 import com.sergioag.clinicare_api.repository.RoleRepository;
 import com.sergioag.clinicare_api.repository.UserRepository;
 import com.sergioag.clinicare_api.security.JwtService;
+import com.sergioag.clinicare_api.service.EmailService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -34,17 +37,20 @@ public class AuthController {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final RoleRepository roleRepository;
+    private final EmailService emailService;
 
     public AuthController(AuthenticationManager authenticationManager,
                           JwtService jwtService,
                           UserRepository userRepository,
                           PasswordEncoder passwordEncoder,
-                          RoleRepository roleRepository) {
+                          RoleRepository roleRepository,
+                          EmailService emailService) {
         this.authenticationManager = authenticationManager;
         this.jwtService = jwtService;
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.roleRepository = roleRepository;
+        this.emailService = emailService;
     }
 
     @PostMapping("/login")
@@ -79,6 +85,7 @@ public class AuthController {
             return ResponseEntity.status(HttpStatus.CONFLICT)
                     .body(Map.of("message", "El DNI ingresado ya está en uso"));
         } else {
+            // ************* USUARIO ***************
             User user = new User();
             user.setEmail(req.getEmail());
             user.setPassword(passwordEncoder.encode(req.getPassword()));
@@ -93,6 +100,14 @@ public class AuthController {
             user.setStatus(UserStatus.PENDING);
 
             userRepository.save(user);
+
+            // ************* EMAIL ***************
+            EmailDTO emailDTO = new EmailDTO();
+            emailDTO.setToUser(req.getEmail());
+            emailDTO.setSubject("Registro en Clinicare");
+            emailDTO.setMessage("Te has registrado con éxito, un administrador revisará la solicitud y recibirás un correo cuando sea validada.");
+
+//            emailService.sendEmail(emailDTO.getToUser(), emailDTO.getSubject(), emailDTO.getMessage());
 
             return ResponseEntity.status(HttpStatus.CREATED)
                     .body(Map.of("message", "Usuario registrado correctamente"));

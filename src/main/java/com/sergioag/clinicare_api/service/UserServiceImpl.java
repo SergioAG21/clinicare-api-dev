@@ -23,6 +23,10 @@ public class UserServiceImpl implements UserService {
         return userRepository.findAll();
     }
 
+    public User findById(Long id) {
+        return userRepository.findById(id).orElse(null);
+    }
+
     public User save(User user) {
         return userRepository.save(user);
     }
@@ -32,6 +36,12 @@ public class UserServiceImpl implements UserService {
 
         return userRepository.findByEmail(email)
                 .orElseThrow(() -> new EmailNotFoundException("El usuario con email no está registrado o no está confirmado"));
+    }
+
+    public void deleteById(Long id) {
+        id = this.findById(id).getId();
+
+        userRepository.deleteById(id);
     }
 
 }

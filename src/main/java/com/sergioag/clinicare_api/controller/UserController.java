@@ -42,6 +42,14 @@ public class UserController {
         return ResponseEntity.ok(userResponse);
     }
 
+    @GetMapping("{id}")
+    public ResponseEntity<UserResponseDTO> findById(@PathVariable Long id) {
+        if (userService.findById(id) == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(userMapper.toUserResponseDTO(userService.findById(id)));
+    }
+
     @PostMapping
     public ResponseEntity<?> save(@RequestBody User user, BindingResult result) {
         if(result.hasErrors()) {
@@ -49,6 +57,15 @@ public class UserController {
         }
 
         return ResponseEntity.status(HttpStatus.CREATED).body(userService.save(user));
+    }
+
+    @DeleteMapping("{id}")
+    public ResponseEntity<?> deleteById(@PathVariable Long id) {
+        if(userService.findById(id) == null) {
+            return ResponseEntity.notFound().build();
+        }
+        userService.deleteById(id);
+        return ResponseEntity.noContent().build();
     }
 
     private ResponseEntity<?> validation(BindingResult result) {

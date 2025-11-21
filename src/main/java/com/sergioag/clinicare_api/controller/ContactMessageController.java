@@ -1,9 +1,11 @@
 package com.sergioag.clinicare_api.controller;
 
 import com.sergioag.clinicare_api.dto.ContactMessageResponseDTO;
+import com.sergioag.clinicare_api.dto.email.EmailDTO;
 import com.sergioag.clinicare_api.entity.ContactMessage;
 import com.sergioag.clinicare_api.mapper.ContactMessageMapper;
 import com.sergioag.clinicare_api.service.ContactService;
+import com.sergioag.clinicare_api.service.EmailService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -18,11 +20,13 @@ import java.util.Optional;
 @RequestMapping("/api/contact")
 public class ContactMessageController {
     private final ContactService contactService;
+    private final EmailService emailService;
     private final ContactMessageMapper contactMessageMapper;
 
-    public ContactMessageController(ContactService contactService, ContactMessageMapper contactMessageMapper) {
+    public ContactMessageController(ContactService contactService, ContactMessageMapper contactMessageMapper, EmailService emailService) {
         this.contactService = contactService;
         this.contactMessageMapper = contactMessageMapper;
+        this.emailService = emailService;
     }
 
     @GetMapping
@@ -66,6 +70,21 @@ public class ContactMessageController {
 
         return ResponseEntity.status(HttpStatus.CREATED).body(contactService.save(message));
     }
+
+    @PostMapping("/answer/{id}")
+    public ResponseEntity<?> answer(@PathVariable Long id, @RequestBody Map<String, String> body, BindingResult result) {
+
+        String answer = body.get("answer");
+
+        if(result.hasErrors()) {
+            return validation(result);
+        }
+
+        ContactMessage updated = contactService.update(id, answer);
+
+        return ResponseEntity.ok(updated);
+    }
+
 
     private ResponseEntity<?> validation(BindingResult result) {
         Map<String, String> errors = new HashMap<>();

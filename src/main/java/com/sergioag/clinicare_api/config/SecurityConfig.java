@@ -33,6 +33,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/auth/**").permitAll()
                         .requestMatchers("/api/users/**").permitAll()
                         .requestMatchers("/api/contact/**").permitAll()
+                        .requestMatchers("/api/email/**").permitAll()
 
                         // Rutas por rol
                         .requestMatchers("/api/admin/**").hasRole("ADMIN")
