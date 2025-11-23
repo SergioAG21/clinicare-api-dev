@@ -59,6 +59,25 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.CREATED).body(userService.save(user));
     }
 
+    // TODO
+//    @PutMapping("{id}")
+//    public ResponseEntity<?> update(@PathVariable Long id, @RequestBody User userData) {
+//        if (userService.findById(id) == null) {
+//            return ResponseEntity.notFound().build();
+//        }
+//
+//        return ResponseEntity.ok(userService.update(id, userData));
+//    }
+
+    @PutMapping("{id}/roles")
+    public ResponseEntity<?> updateRoles(@PathVariable Long id, @RequestBody User userData) {
+        if (userService.findById(id) == null) {
+            return ResponseEntity.notFound().build();
+        }
+
+        return ResponseEntity.ok(userService.updateRoles(id, userData));
+    }
+
     @DeleteMapping("{id}")
     public ResponseEntity<?> deleteById(@PathVariable Long id) {
         if(userService.findById(id) == null) {

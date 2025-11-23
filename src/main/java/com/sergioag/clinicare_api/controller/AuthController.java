@@ -99,15 +99,25 @@ public class AuthController {
             user.setRoles(Set.of(defaultRole));
             user.setStatus(UserStatus.PENDING);
 
+            // Envio del email
+            Map<String, Object> variables = new HashMap<>();
+            variables.put("name", user.getName());
+            variables.put("lastName", user.getLastName());
+            variables.put("dni", user.getDni());
+            variables.put("email", user.getEmail());
+
+            try {
+                emailService.sendEmail(
+                        user.getEmail(),
+                        "Hemos recibido tu solicitud de registro en CliniCare",
+                        "registro-pendiente",
+                        variables
+                );
+            } catch (Exception e) {
+                System.err.println("Error al enviar el email: " + e.getMessage());
+            }
+
             userRepository.save(user);
-
-            // ************* EMAIL ***************
-            EmailDTO emailDTO = new EmailDTO();
-            emailDTO.setToUser(req.getEmail());
-            emailDTO.setSubject("Registro en Clinicare");
-            emailDTO.setMessage("Te has registrado con éxito, un administrador revisará la solicitud y recibirás un correo cuando sea validada.");
-
-//            emailService.sendEmail(emailDTO.getToUser(), emailDTO.getSubject(), emailDTO.getMessage());
 
             return ResponseEntity.status(HttpStatus.CREATED)
                     .body(Map.of("message", "Usuario registrado correctamente"));

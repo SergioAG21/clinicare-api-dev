@@ -15,7 +15,7 @@
             <table width="600" cellpadding="0" cellspacing="0"
                    style="background:white; border-radius:10px; overflow:hidden; box-shadow:0 4px 12px rgba(0,0,0,0.1);">
 
-                <!-- Header con logo -->
+                <!-- Header -->
                 <tr>
                     <td style="background:#ffffff; text-align:center; padding:25px 0; border-bottom:1px solid #e8e8e8;">
                         <img th:src="'cid:' + ${logoCid}" alt="Clinicare" style="width: 240px;"/>
@@ -26,11 +26,11 @@
                 <tr>
                     <td style="padding:30px;">
 
-                        <p style="font-size:15px; color:#333; margin-bottom:10px;">
+                        <p style="font-size:15px; color:#333; margin-bottom:10px; text-wrap: pretty;">
                             Hola <span th:text="${nombre}"></span>, hemos recibido tu mensaje y aquí tienes la información solicitada.
                         </p>
 
-                        <h2 style="color: rgb(0,154,255,1); font-size:22px; text-align: center">Tu pregunta</h2>
+                        <h2 style="color: rgb(0,154,255,1); font-size:26; text-align: center">Tu pregunta</h2>
 
                         <!-- Pregunta -->
                         <div style="background:#eef3f7; padding:15px; border-left:5px solid #1B4F72; border-radius:6px;">
@@ -38,7 +38,7 @@
                         </div>
 
                         <!-- Respuesta -->
-                        <h3 style="color: rgb(72,184,75,1); margin-top:25px; font-size:22px; text-align: center;">Nuestra respuesta</h3>
+                        <h3 style="color: rgb(72,184,75,1); margin-top:25px; font-size:26px; text-align: center;">Nuestra respuesta</h3>
                         <div style="background:#eaf7ea; padding:15px; border-left:5px solid #239B56; border-radius:6px;">
                             <p style="margin:0; font-size:15px; color:#145a32;" th:text="${respuesta}"></p>
                         </div>

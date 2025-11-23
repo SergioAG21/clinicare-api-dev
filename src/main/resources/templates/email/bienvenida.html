@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Bienvenido a CliniCare</title>
+</head>
+<body style="margin:0; padding:0; font-family:'Helvetica Neue', Helvetica, Arial, sans-serif; background:#f4f4f6; color:#333;">
+<table width="100%" cellspacing="0" cellpadding="0" style="background:#f4f4f6; padding:40px 0;">
+    <tr>
+        <td align="center">
+            <table width="600" cellpadding="0" cellspacing="0" style="background:#ffffff; border-radius:8px; overflow:hidden; box-shadow:0 4px 20px rgba(0,0,0,0.1);">
+
+                <!-- Header -->
+                <tr>
+                    <td style="text-align:center; padding:30px;">
+                        <img th:src="'cid:' + ${logoCid}" alt="CliniCare" style="width:240px;"/>
+                    </td>
+                </tr>
+
+                <!-- Saludo -->
+                <tr>
+                    <td style="padding:30px;">
+                        <h1 style="font-size:24px; color:#1a1a1a; margin-bottom:20px; text-align:center;">
+                            ¡Bienvenido a CliniCare, <span th:text="${name}"></span>!
+                        </h1>
+                        <p style="font-size:16px; line-height:1.6; text-align:center; color:#555;">
+                            Tu cuenta ha sido activada correctamente. Ahora puedes acceder a todos los servicios y funcionalidades que ofrecemos.
+                        </p>
+                    </td>
+                </tr>
+
+                <!-- Datos del usuario -->
+                <tr>
+                    <td style="padding:0 30px 30px 30px;">
+                        <table width="100%" cellpadding="0" cellspacing="0" style="background:#f0f4f8; border-radius:6px; padding:20px;">
+
+                            <!-- DNI -->
+                            <tr>
+                                <td style="font-size:15px; color:#1B4F72; padding-bottom:12px; vertical-align:middle;">
+                                    <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" width="16" style="vertical-align:middle; margin-right:6px;" alt="DNI"/>
+                                    <strong>DNI:</strong> <span th:text="${dni}"></span>
+                                </td>
+                            </tr>
+
+                            <!-- Nombre -->
+                            <tr>
+                                <td style="font-size:15px; color:#1B4F72; padding-bottom:12px; vertical-align:middle;">
+                                    <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" width="16" style="vertical-align:middle; margin-right:6px;" alt="Nombre"/>
+                                    <strong>Nombre:</strong> <span th:text="${name}"></span> <span th:text="${lastName}"></span>
+                                </td>
+                            </tr>
+
+                            <!-- Email -->
+                            <tr>
+                                <td style="font-size:15px; color:#1B4F72; padding-bottom:12px; vertical-align:middle;">
+                                    <img src="https://cdn-icons-png.flaticon.com/512/561/561127.png" width="16" style="vertical-align:middle; margin-right:6px;" alt="Email"/>
+                                    <strong>Email:</strong> <span th:text="${email}"></span>
+                                </td>
+                            </tr>
+
+                            <!-- Dirección -->
+                            <tr>
+                                <td style="font-size:15px; color:#1B4F72; padding-bottom:12px; vertical-align:middle;">
+                                    <img src="https://cdn-icons-png.flaticon.com/512/484/484167.png" width="16" style="vertical-align:middle; margin-right:6px;" alt="Dirección"/>
+                                    <strong>Dirección:</strong> <span th:text="${address}"></span>
+                                </td>
+                            </tr>
+
+                            <!-- Teléfono -->
+                            <tr>
+                                <td style="font-size:15px; color:#1B4F72; padding-bottom:12px; vertical-align:middle;">
+                                    <img src="https://cdn-icons-png.flaticon.com/512/597/597177.png" width="16" style="vertical-align:middle; margin-right:6px;" alt="Teléfono"/>
+                                    <strong>Teléfono:</strong> <span th:text="${phoneNumber}"></span>
+                                </td>
+                            </tr>
+
+                            <!-- Roles -->
+                            <tr>
+                                <td style="font-size:15px; color:#1B4F72; vertical-align:middle;">
+                                    <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" width="16" style="vertical-align:middle; margin-right:6px;" alt="Roles"/>
+                                    <strong>Eres un:</strong>
+                                    <span th:each="role, iterStat : ${roles}" th:text="${role + (iterStat.last ? '' : ', ')}"></span>
+                                </td>
+                            </tr>
+
+                        </table>
+                    </td>
+                </tr>
+
+                <!-- Botón de acción -->
+                <tr>
+                    <td align="center" style="padding:20px 30px 40px 30px;">
+                        <a href="http://localhost:4200/auth/login"
+                           style="display:inline-block; padding:14px 30px; background:#009aff; color:#ffffff; font-size:16px; font-weight:bold; text-decoration:none; border-radius:6px;">
+                            Iniciar sesión
+                        </a>
+                        <p style="margin-top:25px; font-size:15px; color:#555; text-wrap: pretty;">
+                            Gracias por confiar en <strong>CliniCare</strong>, para iniciar sesión introduce tu <strong>correo electrónico</strong> y <strong>contraseña</strong> con la que te <strong>registraste.</strong>
+                        </p>
+                        <p style="margin-top:30px; font-size:14px; color:#333;">
+                            Saludos,<br/>
+                            <strong>Equipo de CliniCare</strong>
+                        </p>
+                    </td>
+                </tr>
+
+                <!-- Footer -->
+                <tr>
+                    <td style="background:#f0f0f0; text-align:center; padding:20px; font-size:12px; color:#888;">
+                        © 2025 CliniCare. Todos los derechos reservados.<br/>
+                        Este es un mensaje automático, por favor, no respondas a este correo.
+                    </td>
+                </tr>
+
+            </table>
+        </td>
+    </tr>
+</table>
+</body>
+</html>

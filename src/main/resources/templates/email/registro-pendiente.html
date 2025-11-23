@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Registro pendiente</title>
+</head>
+<body style="margin:0; padding:0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">
+
+<table width="100%" cellspacing="0" cellpadding="0">
+    <tr>
+        <td align="center" style="padding:30px 0;">
+            <table width="600" cellpadding="0" cellspacing="0"
+                   style="background:white; border-radius:10px; overflow:hidden; box-shadow:0 4px 12px rgba(0,0,0,0.1);">
+
+                <!-- Header -->
+                <tr>
+                    <td style="background:#ffffff; text-align:center; padding:25px 0; border-bottom:1px solid #e8e8e8;">
+                        <img th:src="'cid:' + ${logoCid}" alt="Clinicare" style="width: 240px;"/>
+                    </td>
+                </tr>
+
+                <!-- Contenido -->
+                <tr>
+                    <td style="padding:30px;">
+
+                        <h2 style="color:#009aff; font-size:26px; text-align:center;">Registro Pendiente</h2>
+
+                        <p style="font-size:15px; color:#333; margin-bottom:10px; text-wrap: pretty;">
+                            Hola <strong><span th:text="${name}"></span> <span th:text="${lastName}"></span></strong>,
+                            hemos recibido tu solicitud de registro y actualmente está <strong>pendiente de verificación</strong>.
+                        </p>
+
+                        <p style="font-size:15px; color:#333;">
+                            Estos son los datos que hemos recibido:
+                        </p>
+
+                        <div style="background:#eef3f7; padding:15px; border-left:5px solid #1B4F72; border-radius:6px; margin-bottom:20px;">
+                            <p style="margin:0; font-size:15px; color:#1B4F72;">
+                                <strong>DNI:</strong> <span th:text="${dni}"></span>
+                            </p>
+                            <p style="margin:0; font-size:15px; color:#1B4F72;">
+                                <strong>Nombre:</strong> <span th:text="${name}"></span>
+                            </p>
+                            <p style="margin:0; font-size:15px; color:#1B4F72;">
+                                <strong>Apellidos:</strong> <span th:text="${lastName}"></span>
+                            </p>
+                            <p style="margin:0; font-size:15px; color:#1B4F72;">
+                                <strong>Email:</strong> <span th:text="${email}"></span>
+                            </p>
+                        </div>
+
+                        <h3 style="color:#48b84b; margin-top:25px; font-size:26px; text-align: center; text-wrap: pretty;">
+                            ¿Qué ocurre ahora?
+                        </h3>
+
+                        <div style="background:#eaf7ea; padding:15px; border-left:5px solid #239B56; border-radius:6px;">
+                            <p style="margin:0; font-size:15px; color:#145a32; text-wrap: pretty;">
+                                Nuestro equipo revisará tu información y te notificaremos a este correo electrónico tan pronto tu cuenta esté
+                                <strong>aprobada</strong>.
+                            </p>
+                        </div>
+
+                        <p style="margin-top:25px; font-size:13px; color:#888; font-style:italic; text-align:center;">
+                            Si no has solicitado este registro, puedes ignorar este mensaje.
+                        </p>
+
+                        <p style="margin-top:25px; font-size:15px; color:#555;">
+                            Gracias por confiar en <strong>CliniCare</strong>.
+                        </p>
+
+                        <p style="margin-top:30px; font-size:14px; color:#333;">
+                            Saludos,<br/>
+                            <strong>Equipo de CliniCare</strong>
+                        </p>
+
+                    </td>
+                </tr>
+
+                <!-- Footer -->
+                <tr>
+                    <td style="background:#f0f0f0; padding:15px; text-align:center; font-size:12px; color:#777;">
+                        © 2025 CliniCare. Todos los derechos reservados.
+                        <br>Este es un mensaje automático, por favor, no respondas a este correo.
+                    </td>
+                </tr>
+
+            </table>
+        </td>
+    </tr>
+</table>
+
+</body>
+</html>
