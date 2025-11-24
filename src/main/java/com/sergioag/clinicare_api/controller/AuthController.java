@@ -67,13 +67,13 @@ public class AuthController {
 
         // ExtraClaims con roles como antes
         Map<String, Object> extraClaims = new HashMap<>();
+        UserStatus userStatus = (UserStatus) user.getStatus();
         Set<String> roles = user.getUserRoles().stream()
                 .map(ur -> ur.getRole().getName()) // igual que antes
                 .collect(Collectors.toSet());
 
         extraClaims.put("roles", roles);
-
-
+        extraClaims.put("userStatus", userStatus);
 
         String token = jwtService.generateToken(request.getEmail(), extraClaims);
         return new AuthResponse(token);
@@ -82,9 +82,6 @@ public class AuthController {
 
     @PostMapping("/register")
     public ResponseEntity<Map<String, String>> register(@RequestBody RegisterRequest req) {
-        Role defaultRole = roleRepository.findByName("USER")
-                .orElseThrow(() -> new RuntimeException("ROLE USER not found"));
-
         boolean emailExists = userRepository.findByEmail(req.getEmail().toLowerCase()).isPresent();
         boolean dniExists = userRepository.findByDni(req.getDni().toUpperCase()).isPresent();
 
@@ -108,11 +105,13 @@ public class AuthController {
             user.setPhoneNumber(req.getPhoneNumber());
             user.setStatus(UserStatus.PENDING);
 
+            Role defaultRole = roleRepository.findByName("USER")
+                    .orElseThrow(() -> new RuntimeException("ROLE USER not found"));
+
             // Crear UserRole para asignar el rol por defecto
             UserRole userRole = new UserRole();
             userRole.setUser(user);
             userRole.setRole(defaultRole);
-            // No asignamos specialty porque es usuario normal
 
             user.setUserRoles(Set.of(userRole));
 

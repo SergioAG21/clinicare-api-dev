@@ -59,7 +59,7 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.CREATED).body(userService.save(user));
     }
 
-    // TODO
+    // TODO Actualizar todo el usuario
 //    @PutMapping("{id}")
 //    public ResponseEntity<?> update(@PathVariable Long id, @RequestBody User userData) {
 //        if (userService.findById(id) == null) {
@@ -70,12 +70,12 @@ public class UserController {
 //    }
 
     @PutMapping("{id}/roles")
-    public ResponseEntity<?> updateRolesOnly(@PathVariable Long id, @RequestBody User userData) {
+    public ResponseEntity<?> updateUserRoles(@PathVariable Long id, @RequestBody User userData) {
         if (userService.findById(id) == null) {
             return ResponseEntity.notFound().build();
         }
 
-        return ResponseEntity.ok(userService.updateRolesOnly(id, userData));
+        return ResponseEntity.ok(userService.updateUserRoles(id, userData));
     }
 
     @DeleteMapping("{id}")

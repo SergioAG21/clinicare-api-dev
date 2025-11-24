@@ -55,6 +55,7 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(() -> new EmailNotFoundException("El usuario con email no está registrado o no está confirmado"));
     }
 
+    // #TODO esto aun no hace nada
     @Override
     public User update(Long id, User newData) {
         User user = userRepository.findById(id)
@@ -69,7 +70,7 @@ public class UserServiceImpl implements UserService {
         user.setBirthDate(newData.getBirthDate());
         user.setGender(newData.getGender());
         user.setPhoneNumber(newData.getPhoneNumber());
-        user.setStatus(UserStatus.ACTIVE);
+        user.setStatus(UserStatus.INCOMPLETE);
 
         if (newData.getPassword() != null && !newData.getPassword().isBlank()) {
             user.setPassword(passwordEncoder.encode(newData.getPassword()));
@@ -86,8 +87,6 @@ public class UserServiceImpl implements UserService {
             newUr.setUser(user);
             newUr.setRole(dbRole);
 
-            // NO asignamos specialty aquí
-
             updatedUserRoles.add(newUr);
         }
 
@@ -96,13 +95,11 @@ public class UserServiceImpl implements UserService {
         return userRepository.save(user);
     }
 
-    // #TODO cambiar el nombre al metodo
     @Transactional
-    public User updateRolesOnly(Long id, User newData) {
+    public User updateUserRoles(Long id, User newData) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
 
-        // Actualizamos datos básicos
         user.setDni(newData.getDni());
         user.setName(newData.getName());
         user.setLastName(newData.getLastName());
@@ -111,7 +108,7 @@ public class UserServiceImpl implements UserService {
         user.setBirthDate(newData.getBirthDate());
         user.setGender(newData.getGender());
         user.setPhoneNumber(newData.getPhoneNumber());
-        user.setStatus(UserStatus.ACTIVE);
+        user.setStatus(UserStatus.INCOMPLETE);
 
         if (newData.getPassword() != null && !newData.getPassword().isBlank()) {
             user.setPassword(passwordEncoder.encode(newData.getPassword()));
@@ -173,57 +170,8 @@ public class UserServiceImpl implements UserService {
         return userRepository.save(user);
     }
 
-    // Update Roles #TODO mandar la especilidad
-    public User updateRoles(Long id, User newData, Long specialtyId) {
-        User user = userRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
-
-        // Actualización de datos básicos
-        user.setDni(newData.getDni());
-        user.setName(newData.getName());
-        user.setLastName(newData.getLastName());
-        user.setEmail(newData.getEmail());
-        user.setAddress(newData.getAddress());
-        user.setBirthDate(newData.getBirthDate());
-        user.setGender(newData.getGender());
-        user.setPhoneNumber(newData.getPhoneNumber());
-        user.setStatus(UserStatus.ACTIVE);
-
-        if (newData.getPassword() != null && !newData.getPassword().isBlank()) {
-            user.setPassword(passwordEncoder.encode(newData.getPassword()));
-        }
-
-        // Actualización de Roles + Specialty
-        Set<UserRole> updatedUserRoles = new HashSet<>();
-
-        for (UserRole ur : newData.getUserRoles()) {
-            Role dbRole = roleRepository.findById(ur.getRole().getId())
-                    .orElseThrow(() -> new RuntimeException("Rol no encontrado: " + ur.getRole().getId()));
-
-            UserRole newUr = new UserRole();
-            newUr.setUser(user);
-            newUr.setRole(dbRole);
-
-            // Si es doctor, asigna la especialidad
-            if ("DOCTOR".equalsIgnoreCase(dbRole.getName()) && specialtyId != null) {
-                Specialty specialty = specialtyRepository.findById(specialtyId)
-                        .orElseThrow(() -> new RuntimeException("Especialidad no encontrada"));
-                newUr.setSpecialty(specialty);
-            }
-
-            updatedUserRoles.add(newUr);
-        }
-
-        user.setUserRoles(updatedUserRoles);
-
-        return userRepository.save(user);
-    }
-
-
-
     public void deleteById(Long id) {
         id = this.findById(id).getId();
-
         userRepository.deleteById(id);
     }
 

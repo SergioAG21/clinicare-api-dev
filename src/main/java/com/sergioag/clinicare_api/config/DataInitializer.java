@@ -72,8 +72,6 @@ public class DataInitializer implements CommandLineRunner {
             UserRole adminUserRole = new UserRole();
             adminUserRole.setUser(admin);
             adminUserRole.setRole(adminRole);
-            // No le asignamos specialty porque es admin
-
             admin.setUserRoles(Set.of(adminUserRole));
 
             userRepository.save(admin);
