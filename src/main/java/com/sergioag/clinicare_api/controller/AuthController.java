@@ -7,6 +7,7 @@ import com.sergioag.clinicare_api.dto.email.EmailDTO;
 import com.sergioag.clinicare_api.entity.ContactMessage;
 import com.sergioag.clinicare_api.entity.Role;
 import com.sergioag.clinicare_api.entity.User;
+import com.sergioag.clinicare_api.entity.UserRole;
 import com.sergioag.clinicare_api.enums.UserStatus;
 import com.sergioag.clinicare_api.exception.EmailNotFoundException;
 import com.sergioag.clinicare_api.repository.RoleRepository;
@@ -27,6 +28,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -60,15 +62,23 @@ public class AuthController {
         );
 
         var user = userRepository.findByEmail(request.getEmail())
-                .orElseThrow(() -> new EmailNotFoundException("El usuario con email no está registrado o no está confirmado"));
+                .orElseThrow(() -> new EmailNotFoundException(
+                        "El usuario con email no está registrado o no está confirmado"));
 
-        // En extraClaims se puede meter lo que sea necesario
+        // ExtraClaims con roles como antes
         Map<String, Object> extraClaims = new HashMap<>();
-            extraClaims.put("roles", user.getRoles());
+        Set<String> roles = user.getUserRoles().stream()
+                .map(ur -> ur.getRole().getName()) // igual que antes
+                .collect(Collectors.toSet());
+
+        extraClaims.put("roles", roles);
+
+
 
         String token = jwtService.generateToken(request.getEmail(), extraClaims);
         return new AuthResponse(token);
     }
+
 
     @PostMapping("/register")
     public ResponseEntity<Map<String, String>> register(@RequestBody RegisterRequest req) {
@@ -96,10 +106,17 @@ public class AuthController {
             user.setName(req.getName());
             user.setGender(req.getGender());
             user.setPhoneNumber(req.getPhoneNumber());
-            user.setRoles(Set.of(defaultRole));
             user.setStatus(UserStatus.PENDING);
 
-            // Envio del email
+            // Crear UserRole para asignar el rol por defecto
+            UserRole userRole = new UserRole();
+            userRole.setUser(user);
+            userRole.setRole(defaultRole);
+            // No asignamos specialty porque es usuario normal
+
+            user.setUserRoles(Set.of(userRole));
+
+            // Envío del email
             Map<String, Object> variables = new HashMap<>();
             variables.put("name", user.getName());
             variables.put("lastName", user.getLastName());
@@ -123,5 +140,6 @@ public class AuthController {
                     .body(Map.of("message", "Usuario registrado correctamente"));
         }
     }
+
 
 }

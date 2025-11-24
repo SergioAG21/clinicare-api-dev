@@ -1,10 +1,13 @@
 package com.sergioag.clinicare_api.config;
 
 import com.sergioag.clinicare_api.entity.Role;
+import com.sergioag.clinicare_api.entity.Specialty;
 import com.sergioag.clinicare_api.entity.User;
+import com.sergioag.clinicare_api.entity.UserRole;
 import com.sergioag.clinicare_api.enums.Gender;
 import com.sergioag.clinicare_api.enums.UserStatus;
 import com.sergioag.clinicare_api.repository.RoleRepository;
+import com.sergioag.clinicare_api.repository.SpecialtyRepository;
 import com.sergioag.clinicare_api.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
@@ -21,17 +24,30 @@ public class DataInitializer implements CommandLineRunner {
     private final RoleRepository roleRepository;
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final SpecialtyRepository specialtyRepository;
 
     @Override
     public void run(String... args) throws Exception {
         String[] roles = { "ADMIN", "DOCTOR", "PATIENT", "USER" };
 
-        // Creación de los roles
         for (String roleName : roles) {
             if (roleRepository.findByName(roleName).isEmpty()) {
                 Role role = new Role();
                 role.setName(roleName);
                 roleRepository.save(role);
+            }
+        }
+
+        String[] especialidades = {
+                "Cardiología", "Dermatología", "Endocrnología", "Neurolgía", "Psiquiatría", "Pediatría",
+                "Ginecología", "Oncología", "Oftalmología", "Otorrinolaringología", "Nefrología", "Neumología",
+                "Reumatología", "Traumatología", "Urología", "Hematología"
+        };
+        for(String especialidad : especialidades) {
+            if(specialtyRepository.findByName(especialidad).isEmpty()) {
+                Specialty  specialty = new Specialty();
+                specialty.setName(especialidad);
+                specialtyRepository.save(specialty);
             }
         }
 
@@ -48,7 +64,17 @@ public class DataInitializer implements CommandLineRunner {
             admin.setBirthDate(LocalDate.of(2001, 03, 04));
             admin.setGender(Gender.MALE);
             admin.setStatus(UserStatus.ACTIVE);
-            admin.setRoles(Set.of(roleRepository.findByName("ADMIN").get()));
+
+            // Crear UserRole para ADMIN
+            Role adminRole = roleRepository.findByName("ADMIN")
+                    .orElseThrow(() -> new RuntimeException("Rol ADMIN no encontrado"));
+
+            UserRole adminUserRole = new UserRole();
+            adminUserRole.setUser(admin);
+            adminUserRole.setRole(adminRole);
+            // No le asignamos specialty porque es admin
+
+            admin.setUserRoles(Set.of(adminUserRole));
 
             userRepository.save(admin);
             System.out.println("Usuario admin creado: **** admin@clinicare.com | admin123 ****");

@@ -39,4 +39,7 @@ public class UserResponseDTO {
     private Gender gender;
 
     private Set<String> roles;
+
+    @JsonProperty("doctor_specialty")
+    private String specialty; // nueva propiedad para el doctor
 }

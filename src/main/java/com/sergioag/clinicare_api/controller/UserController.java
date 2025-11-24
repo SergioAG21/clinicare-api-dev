@@ -30,8 +30,8 @@ public class UserController {
     @GetMapping
     public ResponseEntity<List<UserResponseDTO>> findAll() {
         List<User> users = userService.findAll();
-        List<UserResponseDTO> usersResponse = userMapper.toUserResponseDTOs(users);
-        return ResponseEntity.ok(usersResponse);
+
+        return ResponseEntity.ok(userMapper.toUserResponseDTOs(users));
     }
 
     @GetMapping("/me")
@@ -70,12 +70,12 @@ public class UserController {
 //    }
 
     @PutMapping("{id}/roles")
-    public ResponseEntity<?> updateRoles(@PathVariable Long id, @RequestBody User userData) {
+    public ResponseEntity<?> updateRolesOnly(@PathVariable Long id, @RequestBody User userData) {
         if (userService.findById(id) == null) {
             return ResponseEntity.notFound().build();
         }
 
-        return ResponseEntity.ok(userService.updateRoles(id, userData));
+        return ResponseEntity.ok(userService.updateRolesOnly(id, userData));
     }
 
     @DeleteMapping("{id}")
