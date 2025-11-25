@@ -7,7 +7,9 @@ import org.mapstruct.Mapper;
 import java.util.List;
 
 @Mapper(componentModel = "spring")
-public interface SpecialtyMaper {
+public interface SpecialtyMapper {
+
+    SpecialtyDTO toSpecialtyDTO(Specialty specialty);
 
     List<SpecialtyDTO> toSpecialtyDTO(List<Specialty> specialties);
 }

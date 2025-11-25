@@ -1,5 +1,6 @@
 package com.sergioag.clinicare_api.controller;
 
+import com.sergioag.clinicare_api.dto.UpdateUserDTO;
 import com.sergioag.clinicare_api.dto.UserResponseDTO;
 import com.sergioag.clinicare_api.entity.User;
 import com.sergioag.clinicare_api.mapper.UserMapper;
@@ -60,14 +61,14 @@ public class UserController {
     }
 
     // TODO Actualizar todo el usuario
-//    @PutMapping("{id}")
-//    public ResponseEntity<?> update(@PathVariable Long id, @RequestBody User userData) {
-//        if (userService.findById(id) == null) {
-//            return ResponseEntity.notFound().build();
-//        }
-//
-//        return ResponseEntity.ok(userService.update(id, userData));
-//    }
+    @PutMapping("{id}")
+    public ResponseEntity<?> update(@PathVariable Long id, @RequestBody UpdateUserDTO dto) {
+        if (userService.findById(id) == null) {
+            return ResponseEntity.notFound().build();
+        }
+
+        return ResponseEntity.ok(userService.update(id, dto));
+    }
 
     @PutMapping("{id}/roles")
     public ResponseEntity<?> updateUserRoles(@PathVariable Long id, @RequestBody User userData) {

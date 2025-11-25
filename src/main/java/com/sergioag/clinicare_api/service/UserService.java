@@ -1,5 +1,6 @@
 package com.sergioag.clinicare_api.service;
 
+import com.sergioag.clinicare_api.dto.UpdateUserDTO;
 import com.sergioag.clinicare_api.entity.User;
 import org.springframework.security.core.Authentication;
 
@@ -16,9 +17,9 @@ public interface UserService {
 
     User getCurrentUser(Authentication authentication);
 
-    User update(Long id, User user);
-
     User updateUserRoles(Long id, User userData);
 
     void deleteById(Long id);
+
+    Object update(Long id, UpdateUserDTO dto);
 }

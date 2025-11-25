@@ -1,5 +1,6 @@
 package com.sergioag.clinicare_api.service;
 
+import com.sergioag.clinicare_api.dto.UpdateUserDTO;
 import com.sergioag.clinicare_api.entity.Role;
 import com.sergioag.clinicare_api.entity.Specialty;
 import com.sergioag.clinicare_api.entity.User;
@@ -9,6 +10,7 @@ import com.sergioag.clinicare_api.exception.EmailNotFoundException;
 import com.sergioag.clinicare_api.repository.RoleRepository;
 import com.sergioag.clinicare_api.repository.SpecialtyRepository;
 import com.sergioag.clinicare_api.repository.UserRepository;
+import com.sergioag.clinicare_api.repository.UserRoleRepository;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -22,16 +24,18 @@ public class UserServiceImpl implements UserService {
     private UserRepository userRepository;
     private RoleRepository roleRepository;
     private SpecialtyRepository specialtyRepository;
+    private final UserRoleRepository userRoleRepository;
     private final PasswordEncoder passwordEncoder;
     private final EmailService emailService;
 
 
-    public UserServiceImpl(UserRepository userRepository, SpecialtyRepository specialtyRepository ,RoleRepository roleRepository, PasswordEncoder passwordEncoder, EmailService emailService) {
+    public UserServiceImpl(UserRepository userRepository, SpecialtyRepository specialtyRepository, UserRoleRepository userRoleRepository ,RoleRepository roleRepository, PasswordEncoder passwordEncoder, EmailService emailService) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.passwordEncoder = passwordEncoder;
         this.emailService = emailService;
         this.specialtyRepository = specialtyRepository;
+        this.userRoleRepository = userRoleRepository;
     }
 
     @Override
@@ -55,45 +59,47 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(() -> new EmailNotFoundException("El usuario con email no está registrado o no está confirmado"));
     }
 
-    // #TODO esto aun no hace nada
     @Override
-    public User update(Long id, User newData) {
+    public User update(Long id, UpdateUserDTO dto) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
 
-        // Actualización de datos básicos
-        user.setDni(newData.getDni());
-        user.setName(newData.getName());
-        user.setLastName(newData.getLastName());
-        user.setEmail(newData.getEmail());
-        user.setAddress(newData.getAddress());
-        user.setBirthDate(newData.getBirthDate());
-        user.setGender(newData.getGender());
-        user.setPhoneNumber(newData.getPhoneNumber());
-        user.setStatus(UserStatus.INCOMPLETE);
+        user.setDni(dto.getDni());
+        user.setName(dto.getName());
+        user.setLastName(dto.getLastName());
+        user.setEmail(dto.getEmail());
+        user.setAddress(dto.getAddress());
+        user.setBirthDate(dto.getBirthDate());
+        user.setGender(dto.getGender());
+        user.setPhoneNumber(dto.getPhoneNumber());
+        user.setStatus(UserStatus.ACTIVE);
 
-        if (newData.getPassword() != null && !newData.getPassword().isBlank()) {
-            user.setPassword(passwordEncoder.encode(newData.getPassword()));
+        if (dto.getPassword() != null && !dto.getPassword().isBlank()) {
+            user.setPassword(passwordEncoder.encode(dto.getPassword()));
         }
 
-        // Actualización de Roles (SIN asignar specialty)
-        Set<UserRole> updatedUserRoles = new HashSet<>();
+        // Actualizar especialidad si se envía
+        if (dto.getSpecialtyId() != null) {
+            Specialty specialty = specialtyRepository.findById(dto.getSpecialtyId())
+                    .orElseThrow(() -> new RuntimeException("Especialidad no encontrada"));
 
-        for (UserRole ur : newData.getUserRoles()) {
-            Role dbRole = roleRepository.findById(ur.getRole().getId())
-                    .orElseThrow(() -> new RuntimeException("Rol no encontrado: " + ur.getRole().getId()));
+            UserRole userRole = userRoleRepository.findByUserIdAndRoleName(id, "DOCTOR")
+                    .orElseGet(() -> {
+                        UserRole ur = new UserRole();
+                        ur.setUser(user);
+                        ur.setRole(roleRepository.findByName("DOCTOR")
+                                .orElseThrow(() -> new RuntimeException("Rol DOCTOR no encontrado")));
+                        return ur;
+                    });
 
-            UserRole newUr = new UserRole();
-            newUr.setUser(user);
-            newUr.setRole(dbRole);
-
-            updatedUserRoles.add(newUr);
+            userRole.setSpecialty(specialty);
+            userRoleRepository.save(userRole);
         }
-
-        user.setUserRoles(updatedUserRoles);
 
         return userRepository.save(user);
     }
+
+
 
     @Transactional
     public User updateUserRoles(Long id, User newData) {

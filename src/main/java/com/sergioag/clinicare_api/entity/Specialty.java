@@ -5,7 +5,6 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
-import jdk.jfr.Name;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -14,7 +13,7 @@ import lombok.NoArgsConstructor;
 import static jakarta.persistence.GenerationType.IDENTITY;
 
 @Entity
-@Table(name = "specialities")
+@Table(name = "specialties")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -27,5 +26,4 @@ public class Specialty {
 
     @NotBlank
     private String name;
-
 }

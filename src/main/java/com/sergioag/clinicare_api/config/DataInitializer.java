@@ -39,13 +39,14 @@ public class DataInitializer implements CommandLineRunner {
         }
 
         String[] especialidades = {
-                "Cardiología", "Dermatología", "Endocrnología", "Neurolgía", "Psiquiatría", "Pediatría",
+                "Cardiología", "Dermatología", "Endocrinología", "Neurología", "Psiquiatría", "Pediatría",
                 "Ginecología", "Oncología", "Oftalmología", "Otorrinolaringología", "Nefrología", "Neumología",
                 "Reumatología", "Traumatología", "Urología", "Hematología"
         };
-        for(String especialidad : especialidades) {
-            if(specialtyRepository.findByName(especialidad).isEmpty()) {
-                Specialty  specialty = new Specialty();
+
+        for (String especialidad : especialidades) {
+            if (specialtyRepository.findByName(especialidad).isEmpty()) {
+                Specialty specialty = new Specialty();
                 specialty.setName(especialidad);
                 specialtyRepository.save(specialty);
             }
