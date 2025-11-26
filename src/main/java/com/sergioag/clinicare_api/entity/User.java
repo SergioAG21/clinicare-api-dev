@@ -2,6 +2,7 @@ package com.sergioag.clinicare_api.entity;
 
 import static jakarta.persistence.GenerationType.*;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.sergioag.clinicare_api.enums.Gender;
 import com.sergioag.clinicare_api.enums.UserStatus;
@@ -24,7 +25,7 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@EqualsAndHashCode(exclude = "userRoles")
+@EqualsAndHashCode(exclude = {"userRoles", "patients", "doctors"})
 public class User {
 
     @Id
@@ -72,8 +73,25 @@ public class User {
     @Enumerated(EnumType.STRING)
     private UserStatus status;
 
+    @Column(name = "profile_image_url")
+    private String profileImageUrl;
+
     // Evita LazyInitializationException usando EAGER
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private Set<UserRole> userRoles = new HashSet<>();
+
+    // Pacientes asignados a este doctor
+    @ManyToMany
+    @JoinTable(
+            name = "patient_doctor",
+            joinColumns = @JoinColumn(name = "doctor_id"),
+            inverseJoinColumns = @JoinColumn(name = "patient_id")
+    )
+    private Set<User> patients = new HashSet<>();
+
+    // Doctores asignados a este paciente
+    @ManyToMany(mappedBy = "patients")
+    @JsonIgnore   // <-- evitar recursión infinita
+    private Set<User> doctors = new HashSet<>();
 
 }

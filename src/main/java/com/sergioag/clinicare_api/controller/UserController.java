@@ -11,7 +11,12 @@ import org.springframework.security.core.Authentication;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -60,7 +65,6 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.CREATED).body(userService.save(user));
     }
 
-    // TODO Actualizar todo el usuario
     @PutMapping("{id}")
     public ResponseEntity<?> update(@PathVariable Long id, @RequestBody UpdateUserDTO dto) {
         if (userService.findById(id) == null) {
@@ -86,6 +90,60 @@ public class UserController {
         }
         userService.deleteById(id);
         return ResponseEntity.noContent().build();
+    }
+
+    // Subir imagenes
+    @PostMapping("{id}/upload-image")
+    public ResponseEntity<?> uploadImage(
+            @PathVariable Long id,
+            @RequestParam("file") MultipartFile file
+    ) {
+        try {
+            if(file.isEmpty()) {
+                return ResponseEntity.badRequest().body("File is empty");
+            }
+
+            if(!file.getContentType().startsWith("image")) {
+                return ResponseEntity.badRequest().body("File must be of type image");
+            }
+
+            // Nombre del archivo
+            String fileName = id + "_" + System.currentTimeMillis() + "_" + file.getOriginalFilename();
+
+            // Carpeta uploads/users/
+            Path uploadDir = Paths.get("uploads/users");
+            Files.createDirectories(uploadDir);
+
+            // Eliminar archivos antiguos del usuario
+            Files.list(uploadDir)
+                    .filter(path -> path.getFileName().toString().startsWith(id + "_"))
+                    .forEach(path -> {
+                        try {
+                            Files.delete(path);
+                        } catch (IOException ignored) {}
+                    });
+
+            // Guardar el archivo
+            Path filePath = uploadDir.resolve(fileName);
+            Files.write(filePath, file.getBytes());
+
+            // Generar la url publica
+            String publicUrl = "http://localhost:8080/uploads/users/" + fileName;
+
+            // Guardarla en la BBDD
+            User user = userService.findById(id);
+            user.setProfileImageUrl(publicUrl);
+            userService.save(user);
+
+            return ResponseEntity.ok(Map.of(
+                    "message", "Imagen Subida Correctamente",
+                    "url", publicUrl
+            ));
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error al subir la imagen");
+        }
     }
 
     private ResponseEntity<?> validation(BindingResult result) {

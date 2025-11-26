@@ -22,4 +22,7 @@ public interface UserService {
     void deleteById(Long id);
 
     Object update(Long id, UpdateUserDTO dto);
+
+    // Asignar paciente a Doctor
+    void assignPatientToDoctor(Long patientId, Long doctorId);
 }

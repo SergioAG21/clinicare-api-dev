@@ -15,10 +15,12 @@ import java.util.stream.Collectors;
 @Mapper(componentModel = "spring")
 public interface UserMapper {
 
+    @Mapping(target = "profileImageUrl", source = "profileImageUrl")
     @Mapping(target = "roles", source = "userRoles", qualifiedByName = "mapUserRolesToNames")
     @Mapping(target = "specialty", source = "userRoles", qualifiedByName = "mapDoctorSpecialty")
     UserResponseDTO toUserResponseDTO(User user);
 
+    @Mapping(target = "profileImageUrl", source = "profileImageUrl")
     @Mapping(target = "roles", source = "userRoles", qualifiedByName = "mapUserRolesToNames")
     @Mapping(target = "specialty", source = "userRoles", qualifiedByName = "mapDoctorSpecialty")
     List<UserResponseDTO> toUserResponseDTOs(List<User> users);

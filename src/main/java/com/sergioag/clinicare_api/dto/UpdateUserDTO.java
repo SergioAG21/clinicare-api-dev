@@ -1,5 +1,6 @@
 package com.sergioag.clinicare_api.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.sergioag.clinicare_api.enums.Gender;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -21,4 +22,7 @@ public class UpdateUserDTO {
     private String phoneNumber;
     private String password;
     private Long specialtyId;
+
+    @JsonProperty("profile_user_image")
+    private String profileImageUrl;
 }

@@ -42,4 +42,7 @@ public class UserResponseDTO {
 
     @JsonProperty("doctor_specialty")
     private String specialty; // nueva propiedad para el doctor
+
+    @JsonProperty("profile_user_image")
+    private String profileImageUrl;
 }

@@ -181,4 +181,36 @@ public class UserServiceImpl implements UserService {
         userRepository.deleteById(id);
     }
 
+    @Override
+    @Transactional
+    public void assignPatientToDoctor(Long patientId, Long doctorId) {
+        User patient = userRepository.findById(patientId)
+                .orElseThrow(() -> new NoSuchElementException("Paciente no encontrado con id: " + patientId));
+
+        User doctor = userRepository.findById(doctorId)
+                .orElseThrow(() -> new NoSuchElementException("Doctor no encontrado con id: " + doctorId));
+
+        // Validar roles
+        boolean isPatient = patient.getUserRoles().stream()
+                .anyMatch(ur -> "PATIENT".equalsIgnoreCase(ur.getRole().getName()));
+        boolean isDoctor = doctor.getUserRoles().stream()
+                .anyMatch(ur -> "DOCTOR".equalsIgnoreCase(ur.getRole().getName()));
+
+        if (!isPatient) {
+            throw new IllegalArgumentException("El usuario no es un paciente");
+        }
+        if (!isDoctor) {
+            throw new IllegalArgumentException("El usuario no es un doctor");
+        }
+
+        // Añadir paciente al doctor y viceversa
+        doctor.getPatients().add(patient);
+        patient.getDoctors().add(doctor);
+
+        // Guardar ambos
+        userRepository.save(doctor);
+        userRepository.save(patient);
+    }
+
+
 }
