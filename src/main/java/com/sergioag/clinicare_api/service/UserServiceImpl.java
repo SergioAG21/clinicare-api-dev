@@ -29,7 +29,7 @@ public class UserServiceImpl implements UserService {
     private final EmailService emailService;
 
 
-    public UserServiceImpl(UserRepository userRepository, SpecialtyRepository specialtyRepository, UserRoleRepository userRoleRepository ,RoleRepository roleRepository, PasswordEncoder passwordEncoder, EmailService emailService) {
+    public UserServiceImpl(UserRepository userRepository, SpecialtyRepository specialtyRepository, UserRoleRepository userRoleRepository, RoleRepository roleRepository, PasswordEncoder passwordEncoder, EmailService emailService) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.passwordEncoder = passwordEncoder;
@@ -98,8 +98,6 @@ public class UserServiceImpl implements UserService {
 
         return userRepository.save(user);
     }
-
-
 
     @Transactional
     public User updateUserRoles(Long id, User newData) {

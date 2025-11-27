@@ -23,6 +23,5 @@ public interface UserService {
 
     Object update(Long id, UpdateUserDTO dto);
 
-    // Asignar paciente a Doctor
     void assignPatientToDoctor(Long patientId, Long doctorId);
 }
