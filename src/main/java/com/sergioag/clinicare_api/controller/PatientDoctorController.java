@@ -55,6 +55,21 @@ public class PatientDoctorController {
         return ResponseEntity.ok(patientsDTO);
     }
 
+    @GetMapping("/speciality/{specialityId}/doctors")
+    public ResponseEntity<List<UserResponseDTO>> getDoctorsBySpeciality(@PathVariable Long specialityId) {
+
+        List<User> doctors = userService.findDoctorBySpecialtyId(specialityId);
+
+        if (doctors.isEmpty()) return ResponseEntity.noContent().build();
+
+        List<UserResponseDTO> doctorDTOs = doctors.stream()
+                .map(userMapper::toUserResponseDTO)
+                .toList();
+
+        return ResponseEntity.ok(doctorDTOs);
+    }
+
+
     // Obtener los doctores del paciente
     @GetMapping("/patient/{patientId}/doctors")
     public ResponseEntity<List<UserResponseDTO>> getDoctorsOfPatient(@PathVariable Long patientId) {

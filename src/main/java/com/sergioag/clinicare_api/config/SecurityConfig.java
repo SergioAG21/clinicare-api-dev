@@ -36,6 +36,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/email/**").permitAll()
                         .requestMatchers("/api/specialties/**").permitAll()
                         .requestMatchers("/api/patient-doctor/**").permitAll()
+                        .requestMatchers("/api/appointment/**").permitAll()
                         .requestMatchers("uploads/**").permitAll()
 
                         // Rutas por rol

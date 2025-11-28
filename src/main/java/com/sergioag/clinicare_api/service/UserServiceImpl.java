@@ -210,5 +210,12 @@ public class UserServiceImpl implements UserService {
         userRepository.save(patient);
     }
 
+    @Override
+    public List<User> findDoctorBySpecialtyId(Long specialtyId) {
+        Long doctorRoleId = roleRepository.findByName("DOCTOR")
+                .orElseThrow(() -> new RuntimeException("Rol DOCTOR no encontrado"))
+                .getId();
 
+        return userRepository.findDoctorsBySpecialty(specialtyId, doctorRoleId);
+    }
 }
