@@ -35,7 +35,7 @@ public class AppointmentServiceImpl implements AppointmentService {
         this.userRoleRepository = userRoleRepository;
     }
 
-    // Guardar una cita
+    // Crear una cita
     @Override
     public AppointmentResponseDTO saveAppointment(AppointmentRequestDTO dto) {
         // Obtener entidades relacionadas
@@ -93,5 +93,12 @@ public class AppointmentServiceImpl implements AppointmentService {
         Appointment appointment = appointmentRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("Appointment not found with id: " + id));
         return appointmentMapper.toResponseDTO(appointment);
+    }
+
+    // Obtener las citas po ID de la especialidad
+    public List<AppointmentResponseDTO> getAppointmentsBySpecialityId(Long specialityId) {
+        return appointmentMapper.toResponseDTOs(
+                appointmentRepository.findBySpecialityId(specialityId)
+        );
     }
 }
