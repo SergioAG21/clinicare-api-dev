@@ -46,4 +46,6 @@ public class Appointment {
 
     @Enumerated(EnumType.STRING)
     private AppointmentStatus status;
+
+    private String doctorNotes;
 }

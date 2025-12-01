@@ -9,6 +9,8 @@ import java.util.List;
 public interface AppointmentService {
     AppointmentResponseDTO saveAppointment(AppointmentRequestDTO appointment);
 
+    Appointment cancelAppointment(Long appointmentId);
+
     List<AppointmentResponseDTO> getAllAppointments();
 
     List<AppointmentResponseDTO> getAppointmentsByPatientId(Long patientId);
@@ -18,4 +20,8 @@ public interface AppointmentService {
     AppointmentResponseDTO getAppointmentById(Long id);
 
     List<AppointmentResponseDTO> getAppointmentsBySpecialityId(Long specialityId);
+
+    Appointment addDoctorNotes(Long appointmentId, String notes);
+
+
 }

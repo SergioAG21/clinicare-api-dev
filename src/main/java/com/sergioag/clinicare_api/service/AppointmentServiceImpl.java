@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 
 @Service
 public class AppointmentServiceImpl implements AppointmentService {
@@ -101,4 +102,26 @@ public class AppointmentServiceImpl implements AppointmentService {
                 appointmentRepository.findBySpecialityId(specialityId)
         );
     }
+
+    // Cancelar la cita
+    @Override
+    public Appointment cancelAppointment(Long appointmentId) {
+        Appointment appointment = appointmentRepository.findById(appointmentId)
+                .orElseThrow(() -> new RuntimeException("Appointment not found"));
+
+        appointment.setStatus(AppointmentStatus.CANCELLED);
+
+        return appointmentRepository.save(appointment);
+    }
+
+    public Appointment addDoctorNotes(Long appointmentId, String notes) {
+        Appointment appointment = appointmentRepository.findById(appointmentId)
+                .orElseThrow(() -> new RuntimeException("Appointment not found"));
+
+        appointment.setDoctorNotes(notes);
+        appointment.setStatus(AppointmentStatus.COMPLETED);
+
+        return appointmentRepository.save(appointment);
+    }
+
 }

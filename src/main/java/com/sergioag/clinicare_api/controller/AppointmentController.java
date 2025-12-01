@@ -2,12 +2,15 @@ package com.sergioag.clinicare_api.controller;
 
 import com.sergioag.clinicare_api.dto.appointment.AppointmentRequestDTO;
 import com.sergioag.clinicare_api.dto.appointment.AppointmentResponseDTO;
+import com.sergioag.clinicare_api.entity.Appointment;
 import com.sergioag.clinicare_api.mapper.AppointmentMapper;
 import com.sergioag.clinicare_api.repository.AppointmentRepository;
 import com.sergioag.clinicare_api.service.AppointmentService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -52,6 +55,25 @@ public class AppointmentController {
         return appointmentService.getAppointmentById(id);
     }
 
+    @PutMapping("/cancel/{id}")
+    public Appointment cancelAppointment(@PathVariable Long id) {
+        return appointmentService.cancelAppointment(id);
+    }
+
+    @PutMapping("/notes/{id}")
+    public ResponseEntity<?> addDoctorNotes(@PathVariable Long id, @RequestBody Map<String, String> body, BindingResult result) {
+
+        String doctorNotes = body.get("doctorNotes");
+
+        if(result.hasErrors()) {
+            return validation(result);
+        }
+
+        Appointment updated = appointmentService.addDoctorNotes(id, doctorNotes);
+
+        return ResponseEntity.ok(updated);
+    }
+
     @GetMapping("/speciality/{id}")
     public List<AppointmentResponseDTO> getAppointmentBySpecialityId(@PathVariable Long id) {
         return appointmentService.getAppointmentsBySpecialityId(id);
@@ -65,6 +87,14 @@ public class AppointmentController {
     @GetMapping("/patient/{id}")
     public List<AppointmentResponseDTO> getAppointmentByPatientId(@PathVariable Long id) {
         return appointmentService.getAppointmentsByPatientId(id);
+    }
+
+    private ResponseEntity<?> validation(BindingResult result) {
+        Map<String, String> errors = new HashMap<>();
+        result.getFieldErrors().forEach(error -> {
+            errors.put(error.getField(), "En el campo " + error.getField() + " " + error.getDefaultMessage());
+        });
+        return ResponseEntity.badRequest().body(errors);
     }
 
 }
