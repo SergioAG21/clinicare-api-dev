@@ -20,6 +20,8 @@ public interface UserService {
 
     User updateUserRoles(Long id, User userData);
 
+    User makeUserIncomplete(Long id);
+
     void deleteById(Long id);
 
     Object update(Long id, UpdateUserDTO dto);

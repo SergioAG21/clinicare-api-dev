@@ -179,6 +179,15 @@ public class UserServiceImpl implements UserService {
         userRepository.deleteById(id);
     }
 
+    public User makeUserIncomplete(Long id) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+
+        user.setStatus(UserStatus.INCOMPLETE);
+
+        return userRepository.save(user);
+    }
+
     @Override
     @Transactional
     public void assignPatientToDoctor(Long patientId, Long doctorId) {

@@ -27,7 +27,7 @@ public class UserController {
     private final UserService userService;
     private final UserMapper userMapper;
 
-    public UserController(UserService userService,  UserMapper userMapper) {
+    public UserController(UserService userService, UserMapper userMapper) {
         this.userService = userService;
         this.userMapper = userMapper;
     }
@@ -58,7 +58,7 @@ public class UserController {
 
     @PostMapping
     public ResponseEntity<?> save(@RequestBody User user, BindingResult result) {
-        if(result.hasErrors()) {
+        if (result.hasErrors()) {
             return validation(result);
         }
 
@@ -85,10 +85,19 @@ public class UserController {
 
     @DeleteMapping("{id}")
     public ResponseEntity<?> deleteById(@PathVariable Long id) {
-        if(userService.findById(id) == null) {
+        if (userService.findById(id) == null) {
             return ResponseEntity.notFound().build();
         }
         userService.deleteById(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PutMapping("{id}/incomplete")
+    public ResponseEntity<?> makeUserIncomplete(@PathVariable Long id) {
+        if (userService.findById(id) == null) {
+            return ResponseEntity.notFound().build();
+        }
+        userService.makeUserIncomplete(id);
         return ResponseEntity.noContent().build();
     }
 
@@ -99,11 +108,11 @@ public class UserController {
             @RequestParam("file") MultipartFile file
     ) {
         try {
-            if(file.isEmpty()) {
+            if (file.isEmpty()) {
                 return ResponseEntity.badRequest().body("File is empty");
             }
 
-            if(!file.getContentType().startsWith("image")) {
+            if (!file.getContentType().startsWith("image")) {
                 return ResponseEntity.badRequest().body("File must be of type image");
             }
 
@@ -120,7 +129,8 @@ public class UserController {
                     .forEach(path -> {
                         try {
                             Files.delete(path);
-                        } catch (IOException ignored) {}
+                        } catch (IOException ignored) {
+                        }
                     });
 
             // Guardar el archivo
