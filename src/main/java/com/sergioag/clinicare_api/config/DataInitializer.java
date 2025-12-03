@@ -39,9 +39,9 @@ public class DataInitializer implements CommandLineRunner {
         }
 
         String[] especialidades = {
-                "Cardiología", "Dermatología", "Endocrinología", "Neurología", "Psiquiatría", "Pediatría",
-                "Ginecología", "Oncología", "Oftalmología", "Otorrinolaringología", "Nefrología", "Neumología",
-                "Reumatología", "Traumatología", "Urología", "Hematología"
+                "Cardiología", "Dermatología", "Neurología",
+                "Ginecología", "Oftalmología", "Otorrinolaringología",
+                "Reumatología", "Traumatología", "Urología"
         };
 
         for (String especialidad : especialidades) {
