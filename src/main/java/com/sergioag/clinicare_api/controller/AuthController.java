@@ -3,8 +3,6 @@ package com.sergioag.clinicare_api.controller;
 import com.sergioag.clinicare_api.dto.auth.AuthRequest;
 import com.sergioag.clinicare_api.dto.auth.AuthResponse;
 import com.sergioag.clinicare_api.dto.auth.RegisterRequest;
-import com.sergioag.clinicare_api.dto.email.EmailDTO;
-import com.sergioag.clinicare_api.entity.ContactMessage;
 import com.sergioag.clinicare_api.entity.Role;
 import com.sergioag.clinicare_api.entity.User;
 import com.sergioag.clinicare_api.entity.UserRole;
@@ -14,6 +12,8 @@ import com.sergioag.clinicare_api.repository.RoleRepository;
 import com.sergioag.clinicare_api.repository.UserRepository;
 import com.sergioag.clinicare_api.security.JwtService;
 import com.sergioag.clinicare_api.service.EmailService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -32,6 +32,7 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/auth")
+@Tag(name = "Autenticación", description = "Todo lo relacionado con la Autenticación")
 public class AuthController {
 
     private final AuthenticationManager authenticationManager;
@@ -56,6 +57,7 @@ public class AuthController {
     }
 
     @PostMapping("/login")
+    @Operation(summary = "Login del Usuario y guarda el JWT")
     public AuthResponse login(@RequestBody AuthRequest request) {
         Authentication auth = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword())
@@ -81,6 +83,7 @@ public class AuthController {
 
 
     @PostMapping("/register")
+    @Operation(summary = "Registro de Usuario y manda un Email")
     public ResponseEntity<Map<String, String>> register(@RequestBody RegisterRequest req) {
         boolean emailExists = userRepository.findByEmail(req.getEmail().toLowerCase()).isPresent();
         boolean dniExists = userRepository.findByDni(req.getDni().toUpperCase()).isPresent();

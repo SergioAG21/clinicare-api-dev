@@ -1,18 +1,19 @@
 package com.sergioag.clinicare_api.controller;
 
-import com.sergioag.clinicare_api.dto.AssignRequestDTO;
 import com.sergioag.clinicare_api.dto.UserResponseDTO;
 import com.sergioag.clinicare_api.entity.User;
 import com.sergioag.clinicare_api.mapper.UserMapper;
 import com.sergioag.clinicare_api.service.UserService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/api/patient-doctor")
+@Tag(name = "Relación entre Doctor y Paciente", description = "Gestión la asignación de los usuarios")
 public class PatientDoctorController {
     private final UserService userService;
     private final UserMapper userMapper;
@@ -22,26 +23,8 @@ public class PatientDoctorController {
         this.userMapper = userMapper;
     }
 
-    // Asignar un paciente a un doctor
-    @PostMapping("/assign")
-    public ResponseEntity<?> assignPatientToDoctor(@RequestBody AssignRequestDTO request) {
-        try {
-            userService.assignPatientToDoctor(
-                    request.getPatientId(),
-                    request.getDoctorId()
-            );
-
-            return ResponseEntity.ok(Map.of(
-                    "message", "Paciente asignado al doctor correctamente"
-            ));
-        } catch (Exception e) {
-            e.printStackTrace();
-            return ResponseEntity.badRequest().build();
-        }
-    }
-
-    // Obtener los pacientes del doctor
     @GetMapping("/doctor/{doctorId}/patients")
+    @Operation(summary = "Obtener los pacientes del doctor")
     public ResponseEntity<List<UserResponseDTO>> getPatientsOfDoctor(@PathVariable Long doctorId) {
         User doctor = userService.findById(doctorId);
 
@@ -56,6 +39,7 @@ public class PatientDoctorController {
     }
 
     @GetMapping("/speciality/{specialityId}/doctors")
+    @Operation(summary = "Obtiene los Doctores por Especialidad")
     public ResponseEntity<List<UserResponseDTO>> getDoctorsBySpeciality(@PathVariable Long specialityId) {
 
         List<User> doctors = userService.findDoctorBySpecialtyId(specialityId);
@@ -69,9 +53,8 @@ public class PatientDoctorController {
         return ResponseEntity.ok(doctorDTOs);
     }
 
-
-    // Obtener los doctores del paciente
     @GetMapping("/patient/{patientId}/doctors")
+    @Operation(summary = "Obtener los doctores del paciente")
     public ResponseEntity<List<UserResponseDTO>> getDoctorsOfPatient(@PathVariable Long patientId) {
         User patient = userService.findById(patientId);
 

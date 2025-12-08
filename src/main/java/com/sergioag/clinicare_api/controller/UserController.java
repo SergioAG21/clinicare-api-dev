@@ -5,6 +5,8 @@ import com.sergioag.clinicare_api.dto.UserResponseDTO;
 import com.sergioag.clinicare_api.entity.User;
 import com.sergioag.clinicare_api.mapper.UserMapper;
 import com.sergioag.clinicare_api.service.UserService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -23,6 +25,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api/users")
+@Tag(name = "Usuarios", description = "Gestión de los Usuarios")
 public class UserController {
     private final UserService userService;
     private final UserMapper userMapper;
@@ -34,6 +37,7 @@ public class UserController {
 
     @Transactional(readOnly = true)
     @GetMapping
+    @Operation(summary = "Obtiene todos los Usuarios")
     public ResponseEntity<List<UserResponseDTO>> findAll() {
         List<User> users = userService.findAll();
 
@@ -41,6 +45,7 @@ public class UserController {
     }
 
     @GetMapping("/me")
+    @Operation(summary = "Obtiene el usuario que ha iniciado la sesión")
     public ResponseEntity<UserResponseDTO> me(Authentication authentication) {
         User user = userService.getCurrentUser(authentication);
         UserResponseDTO userResponse = userMapper.toUserResponseDTO(user);
@@ -49,6 +54,7 @@ public class UserController {
     }
 
     @GetMapping("{id}")
+    @Operation(summary = "Obtiene un Usuario por su ID")
     public ResponseEntity<UserResponseDTO> findById(@PathVariable Long id) {
         if (userService.findById(id) == null) {
             return ResponseEntity.notFound().build();
@@ -57,6 +63,7 @@ public class UserController {
     }
 
     @PostMapping
+    @Operation(summary = "Guarda un Usuario")
     public ResponseEntity<?> save(@RequestBody User user, BindingResult result) {
         if (result.hasErrors()) {
             return validation(result);
@@ -66,6 +73,7 @@ public class UserController {
     }
 
     @PutMapping("{id}")
+    @Operation(summary = "Actualiza un usuario por su ID")
     public ResponseEntity<?> update(@PathVariable Long id, @RequestBody UpdateUserDTO dto) {
         if (userService.findById(id) == null) {
             return ResponseEntity.notFound().build();
@@ -75,6 +83,7 @@ public class UserController {
     }
 
     @PutMapping("{id}/roles")
+    @Operation(summary = "Actualiza el rol del usuario por su ID")
     public ResponseEntity<?> updateUserRoles(@PathVariable Long id, @RequestBody User userData) {
         if (userService.findById(id) == null) {
             return ResponseEntity.notFound().build();
@@ -84,6 +93,7 @@ public class UserController {
     }
 
     @DeleteMapping("{id}")
+    @Operation(summary = "Elimina el usuario por su ID")
     public ResponseEntity<?> deleteById(@PathVariable Long id) {
         if (userService.findById(id) == null) {
             return ResponseEntity.notFound().build();
@@ -93,6 +103,7 @@ public class UserController {
     }
 
     @PutMapping("{id}/incomplete")
+    @Operation(summary = "Cambia el estado del usuario a Incompleto")
     public ResponseEntity<?> makeUserIncomplete(@PathVariable Long id) {
         if (userService.findById(id) == null) {
             return ResponseEntity.notFound().build();
@@ -101,8 +112,8 @@ public class UserController {
         return ResponseEntity.noContent().build();
     }
 
-    // Subir imagenes
     @PostMapping("{id}/upload-image")
+    @Operation(summary = "Subir imagen del usuario por su ID")
     public ResponseEntity<?> uploadImage(
             @PathVariable Long id,
             @RequestParam("file") MultipartFile file

@@ -40,6 +40,9 @@ public class SecurityConfig {
                         .requestMatchers("/api/stats/**").permitAll()
                         .requestMatchers("uploads/**").permitAll()
 
+                        // Rutas de Swagger/OpenAPI públicas
+                        .requestMatchers("/v3/api-docs/**", "/swagger-ui.html", "/swagger-ui/**").permitAll()
+
                         // Rutas por rol
                         .requestMatchers("/api/admin/**").hasRole("ADMIN")
                         .requestMatchers("/api/doctor/**").hasRole("DOCTOR")

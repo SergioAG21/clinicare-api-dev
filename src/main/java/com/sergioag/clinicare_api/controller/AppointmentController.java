@@ -6,6 +6,8 @@ import com.sergioag.clinicare_api.entity.Appointment;
 import com.sergioag.clinicare_api.mapper.AppointmentMapper;
 import com.sergioag.clinicare_api.repository.AppointmentRepository;
 import com.sergioag.clinicare_api.service.AppointmentService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -21,6 +23,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api/appointment")
+@Tag(name = "Citas", description = "Gestión de las Citas")
 public class AppointmentController {
 
     private final AppointmentService appointmentService;
@@ -34,19 +37,20 @@ public class AppointmentController {
     }
 
     @PostMapping
+    @Operation(summary = "Crea una cita con todos los detalles")
     public ResponseEntity<?> createAppointment(@RequestBody AppointmentRequestDTO dto) {
         try {
             AppointmentResponseDTO appointment = appointmentService.saveAppointment(dto);
             return ResponseEntity.ok(appointment);
         } catch (RuntimeException ex) {
-            // Aquí capturas el error si, por ejemplo, el doctor ya tiene cita
             return ResponseEntity
-                    .badRequest() // HTTP 400
-                    .body(Map.of("error", ex.getMessage())); // mensaje que quieres enviar al front
+                    .badRequest()
+                    .body(Map.of("error", ex.getMessage()));
         }
     }
 
     @GetMapping
+    @Operation(summary = "Obtener todas las Citas")
     public List<AppointmentResponseDTO> getAllAppointments() {
         return appointmentRepository.findAll()
                 .stream()
@@ -56,16 +60,19 @@ public class AppointmentController {
 
 
     @GetMapping("/{id}")
+    @Operation(summary = "Obtiene una cita por su ID")
     public AppointmentResponseDTO getAppointmentById(@PathVariable Long id) {
         return appointmentService.getAppointmentById(id);
     }
 
     @PutMapping("/cancel/{id}")
+    @Operation(summary = "Cancelar una cita por ID", description = "Cambia el estado de la cita a Cancelado")
     public Appointment cancelAppointment(@PathVariable Long id) {
         return appointmentService.cancelAppointment(id);
     }
 
     @PutMapping("/notes/{id}")
+    @Operation(summary = "Agregar notas del Doctor por ID de la Cita")
     public ResponseEntity<?> addDoctorNotes(@PathVariable Long id, @RequestBody Map<String, String> body, BindingResult result) {
 
         String doctorNotes = body.get("doctorNotes");
@@ -80,6 +87,7 @@ public class AppointmentController {
     }
 
     @PostMapping("{id}/upload-document")
+    @Operation(summary = "Subir un documento PDF")
     public ResponseEntity<?> uploadDocument(
             @PathVariable Long id,
             @RequestParam("file") MultipartFile file
@@ -89,26 +97,20 @@ public class AppointmentController {
                 return ResponseEntity.badRequest().body("File is empty");
             }
 
-            // ✔ Permitir solo PDF
             if (!file.getContentType().equals("application/pdf")) {
                 return ResponseEntity.badRequest().body("File must be a PDF");
             }
 
-            // ✔ Nombre del archivo
             String fileName = id + "_" + System.currentTimeMillis() + "_" + file.getOriginalFilename();
 
-            // ✔ Carpeta uploads/appointments/
             Path uploadDir = Paths.get("uploads/appointments");
             Files.createDirectories(uploadDir);
 
-            // ✔ Guardar archivo
             Path filePath = uploadDir.resolve(fileName);
             Files.write(filePath, file.getBytes());
 
-            // ✔ URL pública
             String publicUrl = "http://localhost:8080/uploads/appointments/" + fileName;
 
-            // ✔ Guardar en la BBDD
             Appointment appointment = appointmentRepository.findById(id).orElseThrow();
             appointment.setDocumentUrl(publicUrl);  // crea este campo
             appointmentRepository.save(appointment);
@@ -127,16 +129,19 @@ public class AppointmentController {
 
 
     @GetMapping("/speciality/{id}")
+    @Operation(summary = "Obtiene Citas por Especialidad", description = "Indicando el ID de la Especialidad obtiene las Citas")
     public List<AppointmentResponseDTO> getAppointmentBySpecialityId(@PathVariable Long id) {
         return appointmentService.getAppointmentsBySpecialityId(id);
     }
 
     @GetMapping("/doctor/{id}")
+    @Operation(summary = "Obtiene Citas por Doctor", description = "Indicando el ID del Doctor obtiene sus Citas")
     public List<AppointmentResponseDTO> getAppointmentByDoctorId(@PathVariable Long id) {
         return appointmentService.getAppointmentsByDoctorId(id);
     }
 
     @GetMapping("/patient/{id}")
+    @Operation(summary = "Obtiene Citas por Paciente", description = "Indicando el ID del Paciente obtiene sus Citas")
     public List<AppointmentResponseDTO> getAppointmentByPatientId(@PathVariable Long id) {
         return appointmentService.getAppointmentsByPatientId(id);
     }

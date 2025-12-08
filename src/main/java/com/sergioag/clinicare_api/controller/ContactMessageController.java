@@ -6,6 +6,8 @@ import com.sergioag.clinicare_api.entity.ContactMessage;
 import com.sergioag.clinicare_api.mapper.ContactMessageMapper;
 import com.sergioag.clinicare_api.service.ContactService;
 import com.sergioag.clinicare_api.service.EmailService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -18,6 +20,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/contact")
+@Tag(name = "Mensajes de Contacto", description = "Gestión de los mensajes de Contacto")
 public class ContactMessageController {
     private final ContactService contactService;
     private final EmailService emailService;
@@ -30,6 +33,7 @@ public class ContactMessageController {
     }
 
     @GetMapping
+    @Operation(summary = "Obtiene todos los mensajes")
     public ResponseEntity<List<ContactMessageResponseDTO>> findAll() {
         List<ContactMessage> messages = contactService.findAll();
         List<ContactMessageResponseDTO> contactMessage = contactMessageMapper.toMessageResponseDTOs(messages);
@@ -38,6 +42,7 @@ public class ContactMessageController {
     }
 
     @GetMapping("/{id}")
+    @Operation(summary = "Obtiene detalles del mensaje por ID")
     public ResponseEntity<ContactMessageResponseDTO> findById(@PathVariable Long id) {
         Optional<ContactMessage> message = contactService.findById(id);
 
@@ -51,6 +56,7 @@ public class ContactMessageController {
     }
 
     @DeleteMapping("/{id}")
+    @Operation(summary = "Elimina mensaje por ID")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         Optional<ContactMessage> contactMessageOptional = contactService.findById(id);
 
@@ -63,6 +69,7 @@ public class ContactMessageController {
     }
 
     @PostMapping("/send")
+    @Operation(summary = "Guarda el mensaje")
     public ResponseEntity<?> save(@RequestBody ContactMessage message, BindingResult result) {
         if(result.hasErrors()) {
             return validation(result);
@@ -72,6 +79,7 @@ public class ContactMessageController {
     }
 
     @PostMapping("/answer/{id}")
+    @Operation(summary = "Respuesta del mensaje por ID")
     public ResponseEntity<?> answer(@PathVariable Long id, @RequestBody Map<String, String> body, BindingResult result) {
 
         String answer = body.get("answer");
