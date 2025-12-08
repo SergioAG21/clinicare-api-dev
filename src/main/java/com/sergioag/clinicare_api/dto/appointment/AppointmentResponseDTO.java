@@ -13,6 +13,7 @@ import java.time.LocalDateTime;
 public class AppointmentResponseDTO {
     private Long id;
     private String patientName;
+    private Long patientId;
     private String doctorName;
     private String specialityName;
     private LocalDateTime appointmentDate;

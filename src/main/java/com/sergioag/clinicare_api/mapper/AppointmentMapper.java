@@ -14,6 +14,7 @@ public interface AppointmentMapper {
     @Mapping(source = "patient", target = "patientName", qualifiedByName = "fullPatientName")
     @Mapping(source = "doctor", target = "doctorName", qualifiedByName = "fullDoctorName")
     @Mapping(source = "speciality.name", target = "specialityName")
+    @Mapping(source = "patient.id", target = "patientId")
     AppointmentResponseDTO toResponseDTO(Appointment appointment);
 
     List<AppointmentResponseDTO> toResponseDTOs(List<Appointment> appointments);

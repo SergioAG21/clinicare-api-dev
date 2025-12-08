@@ -48,4 +48,6 @@ public class Appointment {
     private AppointmentStatus status;
 
     private String doctorNotes;
+
+    private String documentUrl;
 }
