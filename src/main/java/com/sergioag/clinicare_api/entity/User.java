@@ -91,7 +91,7 @@ public class User {
 
     // Doctores asignados a este paciente
     @ManyToMany(mappedBy = "patients")
-    @JsonIgnore   // <-- evitar recursión infinita
+    @JsonIgnore
     private Set<User> doctors = new HashSet<>();
 
 }

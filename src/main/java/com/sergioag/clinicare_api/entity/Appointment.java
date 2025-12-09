@@ -49,5 +49,6 @@ public class Appointment {
 
     private String doctorNotes;
 
+    @Column(name = "document_url")
     private String documentUrl;
 }

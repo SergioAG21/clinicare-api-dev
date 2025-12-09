@@ -41,7 +41,7 @@ public class UserResponseDTO {
     private Set<String> roles;
 
     @JsonProperty("doctor_specialty")
-    private String specialty; // nueva propiedad para el doctor
+    private String specialty;
 
     @JsonProperty("profile_user_image")
     private String profileImageUrl;

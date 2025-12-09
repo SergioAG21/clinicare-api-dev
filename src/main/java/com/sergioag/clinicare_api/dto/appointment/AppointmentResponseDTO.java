@@ -1,5 +1,6 @@
 package com.sergioag.clinicare_api.dto.appointment;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.sergioag.clinicare_api.enums.AppointmentStatus;
 import lombok.*;
 
@@ -21,4 +22,7 @@ public class AppointmentResponseDTO {
     private String reason;
     private AppointmentStatus status;
     private String doctorNotes;
+
+    @JsonProperty("document_url")
+    private String documentUrl;
 }
